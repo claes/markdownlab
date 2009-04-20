@@ -5,56 +5,25 @@ TODO
 
 [ ] 
 
-[ ] 
+[ ] Hello 2008-10-10  
 
 [ ] 
-
-[ ] 
-
-[ ] 
-
-[ ] 
-
-[ ] 
-
-[ ] 
-
-[ ] 
-
-[ ] 
-
-[ ] 
-
-[ ] 
-
-[ ] 
-
-[ ] 
-
-[ ] 
-
-[ ] 
-
-[ ] 
-
-Instructions
-============
 
 [ ] Not started
 
-[-] On hold?
+[+] Completed
 
-[+] Completed successfully
-
-[?] Unknown status
+[-] Aborted
 
 [>] In process
 
-[<] In process - defered
+[<] Halted
 
 [!] Needs action
 
-[*] Cancelled
+[?] Unknown status
+
+[*] 
 
 Weekly calendar
 ============

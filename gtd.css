@@ -50,12 +50,31 @@ h1.title {
     border: none;
 }
 
-p {
-    border: 1px solid black;
+p.todo {
     padding: 0.5em;
-    background-color: #EEEEEE;
+    background-color: #F5F5F5;
     -moz-border-radius: 10px;
 }
+
+p.notstarted {
+    border: 2px solid grey;
+}
+p.completed {
+    border: 2px solid green;
+}
+p.aborted {
+    border: 2px solid lightgreen;
+}
+p.inprocess {
+    border: 2px solid lightblue;
+}
+p.needsaction {
+    border: 2px solid red;
+}
+p.unknownstatus {
+    border: 2px solid orange;
+}
+
 
 dt code {
     font-weight: bold;
@@ -81,4 +100,36 @@ dd p {
 	page-break-before: avoid;
 	counter-reset: page;
     }
+}
+
+/* Calendar stuff */
+
+.main {
+width:200px;
+border:1px solid black;
+}
+
+.month {
+background-color:black;
+font:bold 12px verdana;
+color:white;
+}
+
+.daysofweek {
+background-color:gray;
+font:bold 12px verdana;
+color:white;
+}
+
+.days {
+font-size: 12px;
+font-family:verdana;
+color:black;
+background-color: lightyellow;
+padding: 2px;
+}
+
+.days #today{
+font-weight: bold;
+color: red;
 }
