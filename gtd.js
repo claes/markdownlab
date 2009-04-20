@@ -71,7 +71,7 @@ Date.prototype.setISO8601 = function (string) {
     this.setTime(Number(time));
 }
 
-var dates = [];
+var events = [];
 
 function init_todo() {
     $("#div-todo > p").each(function() {
@@ -105,15 +105,14 @@ function init_todo() {
 		    var datestring = date[1];
 		    var dateObj = new Date();
 		    dateObj.setISO8601(datestring);
-		    dates.push(dateObj);
-		}
-		
 
+		    var event = new Object();
+		    event.startDate = dateObj.to;
+		    event.todostatus = todostatus[1];
+		    events.push(event);
+		}
 	    }
        	});
-    for (var i = 0; i < dates.length; i++) {
-	var date = dates[i];
-    }
 };
 
 function init_structure() {
@@ -139,7 +138,77 @@ function init_structure() {
     }
 }
 
+
+//TODO: do something with resize event for the timeline
+
+var timeline;
+var timeline_data;
+var timeline_data_old = {  // save as a global variable
+    'dateTimeFormat': 'iso8601',
+    'wikiURL': "http://simile.mit.edu/shelf/",
+    'wikiSection': "Simile Cubism Timeline",   
+    'events' : [
+{'start': '2007',
+ 'title': 'Barfusserkirche',
+ 'description': 'by Lyonel Feininger, American/German Painter, 1871-1956'
+}
+		]
+}
+
+function init_timeline_data() {
+    timeline_data = new Object();
+    timeline_data['dateTimeFormat'] = 'iso8601';
+    timeline_data['wikiURL'] = 'http://www.google.com';
+    timeline_data['wikiSection'] = 'Wiki section';
+    timeline_data['events'] = new Array();
+    for (var i = 0; i < events.length; i++) {
+	var event = events[i];
+	var e = new Object();
+	alert(event.startDate.toISO8601String());
+	e['start'] = event.startDate.toISO8601String();
+	//e['start'] = event.startDate;
+	e['title'] = event.todostatus  + " title";
+	e['description'] = event.todostatus;
+	timeline_data['events'].push(e);
+    }
+}
+
+
+
+function init_timeline() {
+    init_timeline_data();
+
+    var eventSource = new Timeline.DefaultEventSource();
+    var bandInfos = [
+		     Timeline.createBandInfo({
+			     width:          "70%", 
+			     eventSource:    eventSource,
+			     date:           "Jun 28 2006 00:00:00 GMT",
+			     intervalUnit:   Timeline.DateTime.MONTH, 
+			     intervalPixels: 100
+			 }),
+		     Timeline.createBandInfo({
+			     width:          "30%", 
+			     eventSource:    eventSource,
+			     date:           "Jun 28 2006 00:00:00 GMT",
+			     intervalUnit:   Timeline.DateTime.YEAR, 
+			     intervalPixels: 200
+			 })
+		     ];
+    bandInfos[1].syncWith = 0;
+    bandInfos[1].highlight = true;
+    //var timelineElement = document.createElement('div');
+    //timelineElement.id = 'timeline';
+    var timelineElement = $('body').prepend('HELLO<div id="timeline" style="height: 150px; border: 1px solid #aaa" ><noscript></noscript></div>');
+    timeline = Timeline.create(document.getElementById('timeline'), bandInfos, Timeline.HORIZONTAL);
+    
+    var url = '.'; // The base url for image, icon and background image references in the data
+    //eventSource.loadJSON(timeline_data, url); // The data was stored into the timeline_data variable.
+    timeline.layout(); // display the Timeline    
+}
+
 $(document).ready(function(){
 	init_structure();
 	init_todo();
+	init_timeline();
  });
