@@ -76,6 +76,8 @@ var events = [];
 function init_todo() {
     $("#div-todo > p").each(function() {
 	    var text = $(this).text();
+	    //event symbol, description, date
+
 	    var eventsymbol = /^\[(.)\]/.exec(text);
 	    //Mark as todo item
 	    if (eventsymbol) {
@@ -103,6 +105,8 @@ function init_todo() {
 		    $(this).addClass(eventStatus);
 		}
 
+		var event = new Object();
+
 		//Find dates
 		var date = /([0-9]{4,4}-[0-9]{2,2}-[0-9]{2,2})/.exec(text);
 		if (date && date.index != -1) {
@@ -110,19 +114,29 @@ function init_todo() {
 		    var dateObj = new Date();
 		    dateObj.setISO8601(datestring);
 
-		    var event = new Object();
 		    event.startDate = dateObj;
 		    event.description = text;
 		    event.status = eventStatus;
 		    event.symbol = eventsymbol[1];
-		    events.push(event);
 		}
+
+		var statusline = /^\[(.)\]\s*(.*?)\s*([0-9]{4,4}-[0-9]{2,2}-[0-9]{2,2})/.exec(text);
+		if (statusline) {
+		    var s = statusline[1];
+		    var h = statusline[2];
+		    var d = statusline[3];
+		    event.title = h;
+		}
+		events.push(event);
+
 	    }
        	});
 };
 
 function init_structure() {
-    var headerList = document.getElementsByTagName("h1");
+    $('body > *').wrapAll('<div id="left"></div>');
+    $('body').append('<div id="right"><div id="timeline"><noscript></noscript></div></div>');
+    var headerList = document.getElementsByTagName('h1');
     for (var i = 0; i < headerList.length; i++) {  
         if (i == headerList.length) {
             break;
@@ -145,21 +159,8 @@ function init_structure() {
 }
 
 
-//TODO: do something with resize event for the timeline
-
 var timeline;
 var timeline_data;
-var timeline_data_old = {  // save as a global variable
-    'dateTimeFormat': 'iso8601',
-    'wikiURL': "http://simile.mit.edu/shelf/",
-    'wikiSection': "Simile Cubism Timeline",   
-    'events' : [
-{'start': '2007',
- 'title': 'Barfusserkirche',
- 'description': 'by Lyonel Feininger, American/German Painter, 1871-1956'
-}
-		]
-}
 
 function init_timeline_data() {
     timeline_data = new Object();
@@ -167,11 +168,13 @@ function init_timeline_data() {
     timeline_data['events'] = new Array();
     for (var i = 0; i < events.length; i++) {
 	var event = events[i];
-	var e = new Object();
-	e['start'] = event.startDate.toISO8601String(3);
-	e['title'] = event.eventStatus;
-	e['description'] = event.description;
-	timeline_data['events'].push(e);
+	if (event.startDate) {
+	    var e = new Object();
+	    e['start'] = event.startDate.toISO8601String(3);
+	    e['title'] = event.title;
+	    e['description'] = event.description;
+	    timeline_data['events'].push(e);
+	}
     }
 }
 
@@ -202,9 +205,8 @@ function init_timeline() {
     bandInfos[0].highlight = true;
     bandInfos[1].highlight = true;
     bandInfos[2].highlight = true;
-    var timelineElement = $('body').prepend('<div id="timeline" style="height: 150px; border: 1px solid #aaa" ><noscript></noscript></div>');
-    timeline = Timeline.create(document.getElementById('timeline'), bandInfos, Timeline.HORIZONTAL);
-    
+    var timelineElement = document.getElementById('timeline');
+    timeline = Timeline.create(timelineElement, bandInfos, Timeline.HORIZONTAL);
     var url = '.'; // The base url for image, icon and background image references in the data
     eventSource.loadJSON(timeline_data, url); // The data was stored into the timeline_data variable.
     timeline.layout(); // display the Timeline    
@@ -216,3 +218,5 @@ $(document).ready(function(){
 	init_timeline_data();
 	init_timeline();
  });
+
+//TODO: do something with resize event for the timeline

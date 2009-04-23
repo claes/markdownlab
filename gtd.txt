@@ -5,11 +5,11 @@ TODO
 
 [ ] 
 
-[ ] Headline. 2009-05-01. More.
+[ ] One event. 2009-05-01. More.
 Next row.  
 Yet another row.
 
-[+] Headline. 2009-06-01. More.
+[+] Another event. 2009-06-01. More.
 
 [ ] 
 
