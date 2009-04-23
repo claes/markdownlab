@@ -50,7 +50,7 @@ h1.title {
     border: none;
 }
 
-p.todo {
+p.event {
     padding: 0.5em;
     background-color: #F5F5F5;
     -moz-border-radius: 10px;

@@ -76,28 +76,32 @@ var events = [];
 function init_todo() {
     $("#div-todo > p").each(function() {
 	    var text = $(this).text();
-	    var todostatus = /^\[(.)\]/.exec(text);
+	    var eventsymbol = /^\[(.)\]/.exec(text);
 	    //Mark as todo item
-	    if (todostatus) {
-		if (todostatus.index != -1) {
-		    $(this).addClass("todo");
+	    if (eventsymbol) {
+		if (eventsymbol.index != -1) {
+		    $(this).addClass("event");
 		}
-		//kind of todo item
-		if (todostatus[1] == " ") {
-		    $(this).addClass("notstarted");
-		} else if (todostatus[1] == "+") {
-		    $(this).addClass("completed");
-		} else if (todostatus[1] == '-') {
-		    $(this).addClass("aborted");
-		} else if (todostatus[1] == '>') {
-		    $(this).addClass("inprocess");
-		} else if (todostatus[1] == '<') {
-		    $(this).addClass("halted");
-		} else if (todostatus[1] == '!') {
-		    $(this).addClass("needsaction");
-		} else if (todostatus[1] == '?') {
-		    $(this).addClass("unknownstatus");
+		//kind of event
+		var eventStatus;
+		if (eventsymbol[1] == " ") {
+		    eventStatus = "notstarted"
+		} else if (eventsymbol[1] == "+") {
+		    eventStatus = "completed";
+		} else if (eventsymbol[1] == '-') {
+		    eventStatus = "aborted";
+		} else if (eventsymbol[1] == '>') {
+		    eventStatus = "inprocess";
+		} else if (eventsymbol[1] == '<') {
+		    eventStatus = "halted";
+		} else if (eventsymbol[1] == '!') {
+		    eventStatus = "needsaction";
+		} else if (eventsymbol[1] == '?') {
+		    eventStatus = "unknown"
 		} 
+		if (eventStatus) {
+		    $(this).addClass(eventStatus);
+		}
 
 		//Find dates
 		var date = /([0-9]{4,4}-[0-9]{2,2}-[0-9]{2,2})/.exec(text);
@@ -107,9 +111,10 @@ function init_todo() {
 		    dateObj.setISO8601(datestring);
 
 		    var event = new Object();
-		    event.startDate = dateObj.toISO8601String(3);
-		    event.todostatus = todostatus[1];
+		    event.startDate = dateObj;
 		    event.description = text;
+		    event.status = eventStatus;
+		    event.symbol = eventsymbol[1];
 		    events.push(event);
 		}
 	    }
@@ -163,40 +168,38 @@ function init_timeline_data() {
     for (var i = 0; i < events.length; i++) {
 	var event = events[i];
 	var e = new Object();
-	e['start'] = event.startDate;
-	e['title'] = event.todostatus  + " title";
+	e['start'] = event.startDate.toISO8601String(3);
+	e['title'] = event.eventStatus;
 	e['description'] = event.description;
 	timeline_data['events'].push(e);
     }
 }
 
-
-
 function init_timeline() {
-    init_timeline_data();
-
     var eventSource = new Timeline.DefaultEventSource();
     var bandInfos = [
 		     Timeline.createBandInfo({
-			     width:          "70%", 
+			     width:          "60%", 
 			     eventSource:    eventSource,
-			     date:           "Jun 28 2006 00:00:00 GMT",
-			     intervalUnit:   Timeline.DateTime.MONTH, 
+			     intervalUnit:   Timeline.DateTime.DAY, 
 			     intervalPixels: 100
 			 }),
 		     Timeline.createBandInfo({
-			     width:          "30%", 
+			     width:          "20%", 
 			     eventSource:    eventSource,
-			     date:           "Jun 28 2006 00:00:00 GMT",
+			     intervalUnit:   Timeline.DateTime.MONTH, 
+			     intervalPixels: 75
+			 }),
+		     Timeline.createBandInfo({
+			     width:          "20%", 
+			     eventSource:    eventSource,
 			     intervalUnit:   Timeline.DateTime.YEAR, 
 			     intervalPixels: 200
 			 })
 		     ];
     bandInfos[1].syncWith = 0;
     bandInfos[1].highlight = true;
-    //var timelineElement = document.createElement('div');
-    //timelineElement.id = 'timeline';
-    var timelineElement = $('body').prepend('HELLO<div id="timeline" style="height: 150px; border: 1px solid #aaa" ><noscript></noscript></div>');
+    var timelineElement = $('body').prepend('<div id="timeline" style="height: 150px; border: 1px solid #aaa" ><noscript></noscript></div>');
     timeline = Timeline.create(document.getElementById('timeline'), bandInfos, Timeline.HORIZONTAL);
     
     var url = '.'; // The base url for image, icon and background image references in the data
@@ -207,5 +210,6 @@ function init_timeline() {
 $(document).ready(function(){
 	init_structure();
 	init_todo();
+	init_timeline_data();
 	init_timeline();
  });
