@@ -210,7 +210,27 @@ function init_timeline() {
     var url = '.'; // The base url for image, icon and background image references in the data
     eventSource.loadJSON(timeline_data, url); // The data was stored into the timeline_data variable.
     timeline.layout(); // display the Timeline    
+
+    var resizeTimerID = null;
+    $(window).resize(function() {
+	    if (resizeTimerID == null) {
+		resizeTimerID = window.setTimeout(function() {
+			resizeTimerID = null;
+			timeline.layout();
+		    }, 250);
+	    }
+	});
 }
+
+
+function timelineResize() {
+     if (resizeTimerID == null) {
+         resizeTimerID = window.setTimeout(function() {
+             resizeTimerID = null;
+             tl.layout();
+         }, 500);
+     }
+ }
 
 $(document).ready(function(){
 	init_structure();
