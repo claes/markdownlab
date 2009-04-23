@@ -12,12 +12,15 @@ body {
     float: left;
 }
 #right {
-    width: 49%; 
-    float: right;
+    width: 45%; 
+    position: fixed;
+    height: 100%;
+    left: auto;
+    right: 1em;
 }
 
 #timeline {
-    height: 700px; 
+    height: 100%; 
     border: 1px solid #aaa;
 }
 
