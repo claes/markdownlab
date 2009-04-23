@@ -122,6 +122,13 @@ dd p {
 	page-break-before: avoid;
 	counter-reset: page;
     }
+
+    #right {
+	display: none;
+    }
+    #left {
+	width: 100%; 
+    }
 }
 
 /* Calendar stuff */
