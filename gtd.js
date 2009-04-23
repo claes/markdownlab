@@ -107,8 +107,9 @@ function init_todo() {
 		    dateObj.setISO8601(datestring);
 
 		    var event = new Object();
-		    event.startDate = dateObj.to;
+		    event.startDate = dateObj.toISO8601String(3);
 		    event.todostatus = todostatus[1];
+		    event.description = text;
 		    events.push(event);
 		}
 	    }
@@ -158,17 +159,13 @@ var timeline_data_old = {  // save as a global variable
 function init_timeline_data() {
     timeline_data = new Object();
     timeline_data['dateTimeFormat'] = 'iso8601';
-    timeline_data['wikiURL'] = 'http://www.google.com';
-    timeline_data['wikiSection'] = 'Wiki section';
     timeline_data['events'] = new Array();
     for (var i = 0; i < events.length; i++) {
 	var event = events[i];
 	var e = new Object();
-	alert(event.startDate.toISO8601String());
-	e['start'] = event.startDate.toISO8601String();
-	//e['start'] = event.startDate;
+	e['start'] = event.startDate;
 	e['title'] = event.todostatus  + " title";
-	e['description'] = event.todostatus;
+	e['description'] = event.description;
 	timeline_data['events'].push(e);
     }
 }
@@ -203,7 +200,7 @@ function init_timeline() {
     timeline = Timeline.create(document.getElementById('timeline'), bandInfos, Timeline.HORIZONTAL);
     
     var url = '.'; // The base url for image, icon and background image references in the data
-    //eventSource.loadJSON(timeline_data, url); // The data was stored into the timeline_data variable.
+    eventSource.loadJSON(timeline_data, url); // The data was stored into the timeline_data variable.
     timeline.layout(); // display the Timeline    
 }
 
