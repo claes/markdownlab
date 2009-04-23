@@ -198,7 +198,10 @@ function init_timeline() {
 			 })
 		     ];
     bandInfos[1].syncWith = 0;
+    bandInfos[2].syncWith = 1;
+    bandInfos[0].highlight = true;
     bandInfos[1].highlight = true;
+    bandInfos[2].highlight = true;
     var timelineElement = $('body').prepend('<div id="timeline" style="height: 150px; border: 1px solid #aaa" ><noscript></noscript></div>');
     timeline = Timeline.create(document.getElementById('timeline'), bandInfos, Timeline.HORIZONTAL);
     
