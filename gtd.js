@@ -71,63 +71,63 @@ Date.prototype.setISO8601 = function (string) {
     this.setTime(Number(time));
 }
 
-var events = [];
+var ical = {
+    todos:[]
+};
 
 function init_todo() {
     $("#div-todo > p").each(function() {
 	    var text = $(this).text();
-	    //event symbol, description, date
 
-	    var eventsymbol = /^\[(.)\]/.exec(text);
+	    //todo is identified by brackets around a char
+	    var todoSymbol = /^\[(.)\]/.exec(text);
 	    //Mark as todo item
-	    if (eventsymbol) {
-		if (eventsymbol.index != -1) {
-		    $(this).addClass("event");
+	    if (todoSymbol) {
+		if (todoSymbol.index != -1) {
+		    $(this).addClass("todo");
 		}
 		//kind of event
-		var eventStatus;
-		if (eventsymbol[1] == " ") {
-		    eventStatus = "notstarted"
-		} else if (eventsymbol[1] == "+") {
-		    eventStatus = "completed";
-		} else if (eventsymbol[1] == '-') {
-		    eventStatus = "aborted";
-		} else if (eventsymbol[1] == '>') {
-		    eventStatus = "inprocess";
-		} else if (eventsymbol[1] == '<') {
-		    eventStatus = "halted";
-		} else if (eventsymbol[1] == '!') {
-		    eventStatus = "needsaction";
-		} else if (eventsymbol[1] == '?') {
-		    eventStatus = "unknown"
+		var todoStatus;
+		if (todoSymbol[1] == " ") {
+		    todoStatus = "notstarted"
+		} else if (todoSymbol[1] == "+") {
+		    todoStatus = "completed";
+		} else if (todoSymbol[1] == '-') {
+		    todoStatus = "aborted";
+		} else if (todoSymbol[1] == '>') {
+		    todoStatus = "inprocess";
+		} else if (todoSymbol[1] == '<') {
+		    todoStatus = "halted";
+		} else if (todoSymbol[1] == '!') {
+		    todoStatus = "needsaction";
+		} else if (todoSymbol[1] == '?') {
+		    todoStatus = "unknown"
 		} 
-		if (eventStatus) {
-		    $(this).addClass(eventStatus);
+		if (todoStatus) {
+		    $(this).addClass(todoStatus);
 		}
 
-		var event = new Object();
-
-		//Find dates
-		var date = /([0-9]{4,4}-[0-9]{2,2}-[0-9]{2,2})/.exec(text);
-		if (date && date.index != -1) {
-		    var datestring = date[1];
-		    var dateObj = new Date();
-		    dateObj.setISO8601(datestring);
-
-		    event.startDate = dateObj;
-		    event.description = text;
-		    event.status = eventStatus;
-		    event.symbol = eventsymbol[1];
+		var todo = new Object();
+		var keyword;
+		var dateExpr = '[0-9]{4,4}-[0-9]{2,2}-[0-9]{2,2}';
+		var todoDateKeywords = ['due', //ical 'due'. when a todo is expected to be completed. 
+					'dtstart' //ical 'dtstart'. when a calendar component begins
+					];
+		for (var i = 0; i < todoDateKeywords.length; i++) {
+		    keyword = todoDateKeywords[i];
+		    var expr = new RegExp(keyword + ':(' + dateExpr + ')').exec(text);
+		    if (expr && expr.index != -1) {
+			var dateObj = new Date();
+			dateObj.setISO8601(expr[1])
+			todo[keyword] = dateObj;
+		    }
 		}
 
-		var statusline = /^\[(.)\]\s*(.*?)\s*([0-9]{4,4}-[0-9]{2,2}-[0-9]{2,2})/.exec(text);
-		if (statusline) {
-		    var s = statusline[1];
-		    var h = statusline[2];
-		    var d = statusline[3];
-		    event.title = h;
-		}
-		events.push(event);
+		todo.description = text;
+		todo.status = todoStatus;
+		todo.symbol = todoSymbol[1];
+
+		ical.todos.push(todo);
 
 	    }
        	});
@@ -166,13 +166,20 @@ function init_timeline_data() {
     timeline_data = new Object();
     timeline_data['dateTimeFormat'] = 'iso8601';
     timeline_data['events'] = new Array();
-    for (var i = 0; i < events.length; i++) {
-	var event = events[i];
-	if (event.startDate) {
+
+    //First, parse ical todos
+    for (var i = 0; i < ical.todos.length; i++) {
+	var todo = ical.todos[i];
+	if (todo.dtstart) {
 	    var e = new Object();
-	    e['start'] = event.startDate.toISO8601String(3);
-	    e['title'] = event.title;
-	    e['description'] = event.description;
+	    if (todo.dtstart) {
+		e['start'] = todo.dtstart.toISO8601String(3);
+	    }
+	    if (todo.due) {
+		e['end'] = todo.due.toISO8601String(3);
+	    }
+	    e['title'] = todo.title;
+	    e['description'] = todo.description;
 	    timeline_data['events'].push(e);
 	}
     }

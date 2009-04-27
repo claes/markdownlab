@@ -1,17 +1,19 @@
 TODO
-============
+====
 
 [ ] 
 
 [ ] 
 
-[ ] One event. 2009-05-01. More.
+[ ] Event 1. dtstart:2009-05-01. More.
 Next row.  
 Yet another row.
 
-[+] Another event. 2009-06-01. More.
+[+] Event 2. dtstart:2009-06-01. More.
 
-[ ] 
+[ ] Event 3. dtstart:2009-12-12 due:2010-01-01
+
+[ ] Event 4. due:2009-06-01
 
 [ ] Not started
 
@@ -28,6 +30,11 @@ Yet another row.
 [?] Unknown status
 
 [*] 
+
+EVENT
+=====
+
+< >
 
 Weekly calendar
 ============
