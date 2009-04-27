@@ -101,6 +101,9 @@ p.unknownstatus {
     border: 2px solid orange;
 }
 
+p.focus {
+    background-color: #FFFFFF;
+}
 
 dt code {
     font-weight: bold;

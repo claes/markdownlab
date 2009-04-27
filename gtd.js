@@ -144,7 +144,7 @@ function init_todo() {
 		if (contexts && contexts.length > 0) {
 		    var comment = "";
 		    for (var i = 0; i < contexts.length; i++) {
-			comment += contexts[i];
+		    	comment += contexts[i];
 		    }
 		    todo.contexts = contexts;
 		    todo.comment = comment;
@@ -153,7 +153,8 @@ function init_todo() {
 		todo.description = text;
 		todo.status = todoStatus;
 		todo.symbol = todoSymbol[1];
-
+		todo.element = $(this);
+		
 		ical.todos.push(todo);
 
 	    }
@@ -208,6 +209,7 @@ function init_timeline_data() {
 	    e['title'] = todo.title;
 	    e['description'] = todo.description;
 	    timeline_data['events'].push(e);
+	    e['todo'] = todo;
 	}
     }
 }
@@ -254,6 +256,23 @@ function init_timeline() {
 		    }, 250);
 	    }
 	});
+
+    //When clicked, focus on the todo item associated with this "bubble"
+    Timeline.OriginalEventPainter.prototype._showBubble = function(x, y, evt) {
+	if (evt._obj && evt._obj.todo) {
+	    $('.focus').removeClass('focus');
+	    evt._obj.todo.element.addClass('focus');
+	    $.scrollTo( evt._obj.todo.element, 
+			500,  { 
+			    margin: 'true', 
+				onAfter: function() {
+				evt._obj.todo.element.fadeOut(300).fadeIn(300).
+				    fadeOut(300).fadeIn(300);
+			    } 
+			});
+	}
+
+    }
 }
 
 
