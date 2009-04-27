@@ -3,8 +3,6 @@ TODO
 
 [ ] 
 
-[ ] 
-
 [ ] Event 1. dtstart:2009-05-01. More.
 Next row.  
 Yet another row.
@@ -13,7 +11,9 @@ Yet another row.
 
 [ ] Event 3. dtstart:2009-12-12 due:2010-01-01
 
-[ ] Event 4. due:2009-06-01
+[ ] Event 4. due:2009-06-01 @phone @email	
+
+[ ] 
 
 [ ] Not started
 

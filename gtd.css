@@ -88,7 +88,7 @@ p.notstarted {
 p.completed {
     border: 2px solid green;
 }
-p.aborted {
+p.cancelled {
     border: 2px solid lightgreen;
 }
 p.inprocess {

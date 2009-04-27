@@ -91,11 +91,11 @@ function init_todo() {
 		if (todoSymbol[1] == " ") {
 		    todoStatus = "notstarted"
 		} else if (todoSymbol[1] == "+") {
-		    todoStatus = "completed";
+		    todoStatus = "completed"; //in ical for todo
 		} else if (todoSymbol[1] == '-') {
-		    todoStatus = "aborted";
+		    todoStatus = "cancelled";   //in ical for todo
 		} else if (todoSymbol[1] == '>') {
-		    todoStatus = "inprocess";
+		    todoStatus = "inprocess"; // in ical for todo
 		} else if (todoSymbol[1] == '<') {
 		    todoStatus = "halted";
 		} else if (todoSymbol[1] == '!') {
@@ -110,6 +110,7 @@ function init_todo() {
 		var todo = new Object();
 		var keyword;
 		var dateExpr = '[0-9]{4,4}-[0-9]{2,2}-[0-9]{2,2}';
+		var stringExpr = '[^\s]*';
 		var todoDateKeywords = ['due', //ical 'due'. when a todo is expected to be completed. 
 					'dtstart' //ical 'dtstart'. when a calendar component begins
 					];
@@ -121,6 +122,32 @@ function init_todo() {
 			dateObj.setISO8601(expr[1])
 			todo[keyword] = dateObj;
 		    }
+		}
+		var todoStringKeywords = ['class', //public / private / confidential
+					  'geo', // longitude + latitude
+					  'location', //string describing location
+					  'priority', //integer, lower is higher, 1 is highest, 0 is undefined
+					  'percent-complete', //int 1-100 for percent completeness
+					  'uid', //unique id of this todo
+					  'url' //url that describes this todo further
+					];
+		for (var i = 0; i < todoStringKeywords.length; i++) {
+		    keyword = todoStringKeywords[i];
+		    var expr = new RegExp(keyword + ':(' + stringExpr + ')').exec(text);
+		    if (expr && expr.index != -1) {
+			todo[keyword] = expr[1];
+		    }
+		}
+
+		//Find contexts: strings started by @. Have no ical relationship
+		var contexts = text.match(/@([^\s]+)/g);
+		if (contexts && contexts.length > 0) {
+		    var comment = "";
+		    for (var i = 0; i < contexts.length; i++) {
+			comment += contexts[i];
+		    }
+		    todo.contexts = contexts;
+		    todo.comment = comment;
 		}
 
 		todo.description = text;
