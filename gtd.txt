@@ -1,19 +1,54 @@
 TODO
 ====
 
-[ ] 
+[ ] Icons with colors that corresponds to status colors
 
-[ ] Event 1. dtstart:2009-05-01. More.
-Next row.  
-Yet another row.
+[ ] Nicer color scheme
 
-[+] Event 2. dtstart:2009-06-01. More.
+[ ] Scroll timeline according to click on todos
 
-[ ] Event 3. dtstart:2009-12-12 due:2010-01-01
+[ ] One-file-bundle
 
-[ ] Event 4. due:2009-06-01 @phone @email	
+[ ] CSS for printing
 
-[ ] 
+[ ] Improve parsing of textual info
+
+[ ] List contexts
+
+[ ] Lists projects
+
+[ ] Generate ical events using data uris
+
+[ ] Tab panel with statistics
+
+[ ] Calendar component
+
+[ ] Sort on status
+
+[ ] Filter on status
+
+[ ] Keyboard control
+
+[ ] Different 'zoom levels'
+
+[ ] Persistence of user settings (cookie?)
+
+[ ] Fancier styling
+
+[ ] Improved date parsing. More formats supported etc
+
+[+] Scoll and highlight clicks on timeline
+
+[+] Example with contexts: @phone @email
+
+[ ] Example with dates due:2009-06-01
+
+[ ] Another example with dates due:2009-07-01
+
+[ ] Yet another example with dates dtstart:2009-05-01
+
+
+How it works:
 
 [ ] Not started
 

@@ -163,7 +163,12 @@ function init_todo() {
 
 function init_structure() {
     $('body > *').wrapAll('<div id="left"></div>');
-    $('body').append('<div id="right"><div id="timeline"><noscript></noscript></div></div>');
+    $('body').append('<div id="right">'+
+		     '<ul><li><a href="#tickler">Tickler</a></li><li><a href="#timeline">Timeline</a></li></ul>' +
+		     '<div id="tickler"></div>'+
+		     '<div id="timeline"><noscript></noscript></div>'+
+		     '</div>');
+    $("#right").tabs();
     var headerList = document.getElementsByTagName('h1');
     for (var i = 0; i < headerList.length; i++) {  
         if (i == headerList.length) {
@@ -184,6 +189,7 @@ function init_structure() {
             nextSibling = tmpSibling;
         }        
     }
+
 }
 
 
@@ -205,6 +211,10 @@ function init_timeline_data() {
 	    }
 	    if (todo.due) {
 		e['end'] = todo.due.toISO8601String(3);
+		if (! todo.dtstart) {
+		    e['start'] = todo.due.toISO8601String(3);
+		    e['durationEent'] = false;
+		}
 	    }
 	    e['title'] = todo.title;
 	    e['description'] = todo.description;
@@ -273,17 +283,13 @@ function init_timeline() {
 	}
 
     }
+
+    $('#right').bind('tabsshow', function(event, ui) {
+	    if (ui.panel.id == "timeline") {
+		timeline.layout();
+	    }
+	});
 }
-
-
-function timelineResize() {
-     if (resizeTimerID == null) {
-         resizeTimerID = window.setTimeout(function() {
-             resizeTimerID = null;
-             tl.layout();
-         }, 500);
-     }
- }
 
 $(document).ready(function(){
 	init_structure();
@@ -291,5 +297,3 @@ $(document).ready(function(){
 	init_timeline_data();
 	init_timeline();
  });
-
-//TODO: do something with resize event for the timeline
