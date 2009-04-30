@@ -111,6 +111,26 @@ dd p {
 }
 
 
+.tickler-selectable .ui-selecting { 
+}
+
+.tickler-selectable .ui-selected { 
+    color: grey;
+}
+
+.tickler-selectable { 
+    list-style-type: none; 
+    margin: 0; 
+    padding: 0; 
+    width: 60%; 
+}
+
+.tickler-selectable li { 
+    margin: 3px; 
+    height: 18px; 
+}
+
+
 @media print {
 
     h1 {

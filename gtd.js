@@ -72,8 +72,59 @@ Date.prototype.setISO8601 = function (string) {
 }
 
 var ical = {
-    todos:[]
+    todos:[],
+    todoStats: {
+	total: 0,
+	notstarted: 0,
+	completed: 0,
+	cancelled: 0,
+	inprocess: 0,
+	halted: 0,
+	needsaction: 0,
+	unknown: 0
+    }
 };
+
+
+function init_tickler() {
+
+    $('#tickler').append('<ul id="todo-stats" class="tickler-selectable"><li id="todo-stats-total" todostatus="all">Number of todos: '+ical.todoStats.total+'</li>' +
+			 '<li id="todo-stats-notstarted" todostatus="notstarted">Not started: '+ical.todoStats.notstarted+'</li>' + 
+			 '<li id="todo-stats-completed" todostatus="completed">Completed: '+ical.todoStats.completed+'</li>' + 
+			 '<li id="todo-stats-cancelled" todostatus="cancelled">Cancelled: '+ical.todoStats.cancelled+'</li>' + 
+			 '<li id="todo-stats-inprocess" todostatus="inprocess">In process: '+ical.todoStats.inprocess+'</li>' + 
+			 '<li id="todo-stats-halted" todostatus="halted">Halted: '+ical.todoStats.halted+'</li>' + 
+			 '<li id="todo-stats-needsaction" todostatus="needsaction">Needs action: '+ical.todoStats.needsaction+'</li>' + 
+			 '<li id="todo-stats-unknown" todostatus="unknown">Unknown status: '+ical.todoStats.unknown+'</li></ul>' 
+			 );
+
+    $("#todo-stats").selectable(
+				{stop: function(event, ui){
+					//$("#todo-stats > li", this).each(function(){
+					$("[todostatus]", this).each(function(){
+						var todostatus = $(this).attr('todostatus');
+						if (todostatus) {
+						    if ($(this).hasClass('ui-selected')) {
+							$("p." + todostatus).slideUp("slow");
+						    } else {
+							$("p." + todostatus).slideDown("slow");
+						    }
+						}
+					    });
+				    }});
+
+
+    /*
+    $("#stats-notstarted").click(function () {
+	    $("p.notstarted").slideToggle("slow");
+	    //$("#stats-notstarted").toggle();
+    });
+    $("#stats-completed").click(function () {
+	    $("p.completed").slideToggle("slow");
+    });
+    */
+
+}
 
 function init_todo() {
     $("#div-todo > p").each(function() {
@@ -89,7 +140,7 @@ function init_todo() {
 		//kind of event
 		var todoStatus;
 		if (todoSymbol[1] == " ") {
-		    todoStatus = "notstarted"
+		    todoStatus = "notstarted";
 		} else if (todoSymbol[1] == "+") {
 		    todoStatus = "completed"; //in ical for todo
 		} else if (todoSymbol[1] == '-') {
@@ -105,6 +156,8 @@ function init_todo() {
 		} 
 		if (todoStatus) {
 		    $(this).addClass(todoStatus);
+		    ical.todoStats.total++;
+		    ical.todoStats[todoStatus]++;
 		}
 
 		var todo = new Object();
@@ -168,7 +221,6 @@ function init_structure() {
 		     '<div id="tickler"></div>'+
 		     '<div id="timeline"><noscript></noscript></div>'+
 		     '</div>');
-    $("#right").tabs();
     var headerList = document.getElementsByTagName('h1');
     for (var i = 0; i < headerList.length; i++) {  
         if (i == headerList.length) {
@@ -213,7 +265,7 @@ function init_timeline_data() {
 		e['end'] = todo.due.toISO8601String(3);
 		if (! todo.dtstart) {
 		    e['start'] = todo.due.toISO8601String(3);
-		    e['durationEent'] = false;
+		    e['durationEvent'] = false;
 		}
 	    }
 	    e['title'] = todo.title;
@@ -291,9 +343,15 @@ function init_timeline() {
 	});
 }
 
+function init_tabs() {
+    $("#right").tabs();
+}
+
 $(document).ready(function(){
 	init_structure();
 	init_todo();
+	init_tickler();
 	init_timeline_data();
 	init_timeline();
+	init_tabs();
  });
