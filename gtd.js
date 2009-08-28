@@ -99,22 +99,22 @@ function init_tickler() {
 			 );
 
     $("#todo-stats").selectable(
-				$("[todostatus]", this).each(function(){
-					var todostatus = $(this).attr('todostatus');
-					if (todostatus) {
-					    if ($(this).hasClass('ui-selected')) {
-						$("p." + todostatus).slideUp("slow");
-					    } else {
-						$("p." + todostatus).slideDown("slow");
-					    }
-					}
-				    });
-				}});
-
+                               {stop: function(event, ui){
+                                       $("[todostatus]", this).each(function(){
+                                               var todostatus = $(this).attr('todostatus');
+                                               if (todostatus) {
+                                                   if ($(this).hasClass('ui-selected')) {
+                                                       $("p." + todostatus).slideUp("slow");
+                                                   } else {
+                                                       $("p." + todostatus).slideDown("slow");
+                                                   }
+                                               }
+                                           });
+                                   }});
 }
 
 function init_todo() {
-    $("#div-todo > p").each(function() {
+    $("div > p").each(function() {
 	    var text = $(this).text();
 
 	    //todo is identified by brackets around a char
@@ -208,6 +208,9 @@ function init_structure() {
 		     '<div id="tickler"></div>'+
 		     '<div id="timeline"><noscript></noscript></div>'+
 		     '</div>');
+
+    //Previous versions of pandoc made a very flat document, this code wraps sections in divs
+    /*
     var headerList = document.getElementsByTagName('h1');
     for (var i = 0; i < headerList.length; i++) {  
         if (i == headerList.length) {
@@ -228,8 +231,9 @@ function init_structure() {
             nextSibling = tmpSibling;
         }        
     }
-
+    */
 }
+
 
 
 var timeline;
