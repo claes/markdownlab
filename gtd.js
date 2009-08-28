@@ -98,8 +98,8 @@ function init_tickler() {
 			 '<li id="todo-stats-unknown" todostatus="unknown">Unknown status: '+ical.todoStats.unknown+'</li></ul>' 
 			 );
 
-    $("#todo-stats").selectable(
-                               {stop: function(event, ui){
+    $("#todo-stats").selectable({
+				   stop: function(event, ui){
                                        $("[todostatus]", this).each(function(){
                                                var todostatus = $(this).attr('todostatus');
                                                if (todostatus) {
@@ -110,96 +110,108 @@ function init_tickler() {
                                                    }
                                                }
                                            });
-                                   }});
+	    }});
+}
+
+
+function wrap_todo(todoElem) {
+
+    var text = todoElem.text();
+
+    //todo is identified by brackets around a char
+    var todoSymbol = /^\[(.)\]/.exec(text);
+    //Mark as todo item
+    if (todoSymbol) {
+	if (todoSymbol.index != -1) {
+	    todoElem.addClass("todo");
+	}
+	//kind of event
+	var todoStatus;
+	if (todoSymbol[1] == " ") {
+	    todoStatus = "notstarted";
+	} else if (todoSymbol[1] == "+") {
+	    todoStatus = "completed"; //in ical for todo
+	} else if (todoSymbol[1] == '-') {
+	    todoStatus = "cancelled";   //in ical for todo
+	} else if (todoSymbol[1] == '>') {
+	    todoStatus = "inprocess"; // in ical for todo
+	} else if (todoSymbol[1] == '<') {
+	    todoStatus = "halted";
+	} else if (todoSymbol[1] == '!') {
+	    todoStatus = "needsaction";
+	} else if (todoSymbol[1] == '?') {
+	    todoStatus = "unknown"
+		} 
+	if (todoStatus) {
+	    todoElem.addClass(todoStatus);
+	    ical.todoStats.total++;
+	    ical.todoStats[todoStatus]++;
+	}
+
+	var todo = new Object();
+	var keyword;
+	var dateExpr = '[0-9]{4,4}-[0-9]{2,2}-[0-9]{2,2}';
+	var stringExpr = '[^\s]*';
+	var todoDateKeywords = ['due', //ical 'due'. when a todo is expected to be completed. 
+				'dtstart' //ical 'dtstart'. when a calendar component begins
+				];
+	for (var i = 0; i < todoDateKeywords.length; i++) {
+	    keyword = todoDateKeywords[i];
+	    var expr = new RegExp(keyword + ':(' + dateExpr + ')').exec(text);
+	    if (expr && expr.index != -1) {
+		var dateObj = new Date();
+		dateObj.setISO8601(expr[1])
+		    todo[keyword] = dateObj;
+	    }
+	}
+	var todoStringKeywords = ['class', //public / private / confidential
+				  'geo', // longitude + latitude
+				  'location', //string describing location
+				  'priority', //integer, lower is higher, 1 is highest, 0 is undefined
+				  'percent-complete', //int 1-100 for percent completeness
+				  'uid', //unique id of this todo
+				  'url' //url that describes this todo further
+				  ];
+	for (var i = 0; i < todoStringKeywords.length; i++) {
+	    keyword = todoStringKeywords[i];
+	    var expr = new RegExp(keyword + ':(' + stringExpr + ')').exec(text);
+	    if (expr && expr.index != -1) {
+		todo[keyword] = expr[1];
+	    }
+	}
+
+	//Find contexts: strings started by @. Have no ical relationship
+	var contexts = text.match(/@([^\s]+)/g);
+	if (contexts && contexts.length > 0) {
+	    var comment = "";
+	    for (var i = 0; i < contexts.length; i++) {
+		comment += contexts[i];
+	    }
+	    todo.contexts = contexts;
+	    todo.comment = comment;
+	}
+
+	todo.description = text;
+	todo.status = todoStatus;
+	todo.symbol = todoSymbol[1];
+	todo.element = todoElem;
+		
+	ical.todos.push(todo);
+
+    }
 }
 
 function init_todo() {
+
     $("div > p").each(function() {
-	    var text = $(this).text();
-
-	    //todo is identified by brackets around a char
-	    var todoSymbol = /^\[(.)\]/.exec(text);
-	    //Mark as todo item
-	    if (todoSymbol) {
-		if (todoSymbol.index != -1) {
-		    $(this).addClass("todo");
-		}
-		//kind of event
-		var todoStatus;
-		if (todoSymbol[1] == " ") {
-		    todoStatus = "notstarted";
-		} else if (todoSymbol[1] == "+") {
-		    todoStatus = "completed"; //in ical for todo
-		} else if (todoSymbol[1] == '-') {
-		    todoStatus = "cancelled";   //in ical for todo
-		} else if (todoSymbol[1] == '>') {
-		    todoStatus = "inprocess"; // in ical for todo
-		} else if (todoSymbol[1] == '<') {
-		    todoStatus = "halted";
-		} else if (todoSymbol[1] == '!') {
-		    todoStatus = "needsaction";
-		} else if (todoSymbol[1] == '?') {
-		    todoStatus = "unknown"
-		} 
-		if (todoStatus) {
-		    $(this).addClass(todoStatus);
-		    ical.todoStats.total++;
-		    ical.todoStats[todoStatus]++;
-		}
-
-		var todo = new Object();
-		var keyword;
-		var dateExpr = '[0-9]{4,4}-[0-9]{2,2}-[0-9]{2,2}';
-		var stringExpr = '[^\s]*';
-		var todoDateKeywords = ['due', //ical 'due'. when a todo is expected to be completed. 
-					'dtstart' //ical 'dtstart'. when a calendar component begins
-					];
-		for (var i = 0; i < todoDateKeywords.length; i++) {
-		    keyword = todoDateKeywords[i];
-		    var expr = new RegExp(keyword + ':(' + dateExpr + ')').exec(text);
-		    if (expr && expr.index != -1) {
-			var dateObj = new Date();
-			dateObj.setISO8601(expr[1])
-			todo[keyword] = dateObj;
-		    }
-		}
-		var todoStringKeywords = ['class', //public / private / confidential
-					  'geo', // longitude + latitude
-					  'location', //string describing location
-					  'priority', //integer, lower is higher, 1 is highest, 0 is undefined
-					  'percent-complete', //int 1-100 for percent completeness
-					  'uid', //unique id of this todo
-					  'url' //url that describes this todo further
-					];
-		for (var i = 0; i < todoStringKeywords.length; i++) {
-		    keyword = todoStringKeywords[i];
-		    var expr = new RegExp(keyword + ':(' + stringExpr + ')').exec(text);
-		    if (expr && expr.index != -1) {
-			todo[keyword] = expr[1];
-		    }
-		}
-
-		//Find contexts: strings started by @. Have no ical relationship
-		var contexts = text.match(/@([^\s]+)/g);
-		if (contexts && contexts.length > 0) {
-		    var comment = "";
-		    for (var i = 0; i < contexts.length; i++) {
-		    	comment += contexts[i];
-		    }
-		    todo.contexts = contexts;
-		    todo.comment = comment;
-		}
-
-		todo.description = text;
-		todo.status = todoStatus;
-		todo.symbol = todoSymbol[1];
-		todo.element = $(this);
-		
-		ical.todos.push(todo);
-
-	    }
+	    wrap_todo($(this));
        	});
-};
+
+    $("dl > p.definitionCombo").each(function() {
+	    wrap_todo($(this));
+	});
+
+}
 
 function init_structure() {
     $('body > *').wrapAll('<div id="left"></div>');
@@ -209,29 +221,36 @@ function init_structure() {
 		     '<div id="timeline"><noscript></noscript></div>'+
 		     '</div>');
 
-    //Previous versions of pandoc made a very flat document, this code wraps sections in divs
-    /*
-    var headerList = document.getElementsByTagName('h1');
-    for (var i = 0; i < headerList.length; i++) {  
-        if (i == headerList.length) {
-            break;
-        }
-        var header = headerList[i];  
-        var nextHeader = headerList[i+1];
-        var nextSibling = header.nextSibling;
-        var div = document.createElement('div');
-	div.id = "div-" + header.id;
-        header.parentNode.replaceChild(div, header);  
-        div.appendChild(header);  
-        while (nextSibling != nextHeader) {
-            var tmpSibling = nextSibling.nextSibling;
-            var tmpParent = nextSibling.parentNode;
-            tmpParent.removeChild(nextSibling);
-            div.appendChild(nextSibling);
-            nextSibling = tmpSibling;
-        }        
+    //should wrap definition lists as well
+    var definitionLists = document.getElementsByTagName('dl');
+    for (var j = 0; j < definitionLists.length; j++) {
+	var dtList = definitionLists[j].getElementsByTagName('dt');
+	if (dtList) {
+	    for (var i = 0; i < dtList.length; i++) {  
+		if (i == dtList.length) {
+		    break;
+		}
+		var dt = dtList[i];  
+		var nextDt = dtList[i+1];
+		var nextSibling = dt.nextSibling;
+		//Adding p elements between dl and dt/dd is invalid HTML4 but works
+		//in Firefox. I think it is pretty ok given that otherwise
+		//we need much more complicated transformations. 
+		var p = document.createElement('p');
+		$(p).addClass('definitionCombo');
+		dt.parentNode.replaceChild(p, dt);  
+		p.appendChild(dt);  
+		while (nextSibling != nextDt) {
+		    var tmpSibling = nextSibling.nextSibling;
+		    var tmpParent = nextSibling.parentNode;
+		    tmpParent.removeChild(nextSibling);
+		    p.appendChild(nextSibling);
+		    nextSibling = tmpSibling;
+		}        
+	    }
+	}
     }
-    */
+
 }
 
 

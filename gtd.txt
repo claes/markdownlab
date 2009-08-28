@@ -1,3 +1,26 @@
+TEST
+====
+
+
+[ ] Use defintion lists for follow up text
+:   By using the definition list syntax with a colon 
+    after the first line we will be able to work this out better
+
+:   That is pretty cool since it allows
+
+:   * ordered lists
+    * yeah
+
+:   among other things
+
+:   Here is the definition.  It may contain multiple blocks.
+    Here is some code:
+
+:       {* my code *} 
+
+:   Here is the third paragraph of this definition.
+
+
 
 How it works:
 =============
