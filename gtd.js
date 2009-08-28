@@ -99,30 +99,17 @@ function init_tickler() {
 			 );
 
     $("#todo-stats").selectable(
-				{stop: function(event, ui){
-					//$("#todo-stats > li", this).each(function(){
-					$("[todostatus]", this).each(function(){
-						var todostatus = $(this).attr('todostatus');
-						if (todostatus) {
-						    if ($(this).hasClass('ui-selected')) {
-							$("p." + todostatus).slideUp("slow");
-						    } else {
-							$("p." + todostatus).slideDown("slow");
-						    }
-						}
-					    });
-				    }});
-
-
-    /*
-    $("#stats-notstarted").click(function () {
-	    $("p.notstarted").slideToggle("slow");
-	    //$("#stats-notstarted").toggle();
-    });
-    $("#stats-completed").click(function () {
-	    $("p.completed").slideToggle("slow");
-    });
-    */
+				$("[todostatus]", this).each(function(){
+					var todostatus = $(this).attr('todostatus');
+					if (todostatus) {
+					    if ($(this).hasClass('ui-selected')) {
+						$("p." + todostatus).slideUp("slow");
+					    } else {
+						$("p." + todostatus).slideDown("slow");
+					    }
+					}
+				    });
+				}});
 
 }
 

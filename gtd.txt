@@ -1,3 +1,23 @@
+
+How it works:
+=============
+
+[ ] Not started
+
+[+] Completed
+
+[-] Aborted
+
+[>] In process
+
+[<] Halted
+
+[!] Needs action
+
+[?] Unknown status
+
+[*] 
+
 TODO
 ====
 
@@ -19,13 +39,15 @@ TODO
 
 [ ] Generate ical events using data uris
 
-[ ] Tab panel with statistics
+[>] Tab panel with statistics
 
 [ ] Calendar component
 
 [ ] Sort on status
 
-[ ] Filter on status
+[>] Filter on status
+
+[ ] Status 'ignore'
 
 [ ] Keyboard control
 
@@ -47,24 +69,6 @@ TODO
 
 [ ] Yet another example with dates dtstart:2009-05-01
 
-
-How it works:
-
-[ ] Not started
-
-[+] Completed
-
-[-] Aborted
-
-[>] In process
-
-[<] Halted
-
-[!] Needs action
-
-[?] Unknown status
-
-[*] 
 
 EVENT
 =====
