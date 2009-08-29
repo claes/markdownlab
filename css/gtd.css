@@ -80,24 +80,48 @@ p.todo {
     -moz-border-radius: 10px;
 }
 
+/*
+http://colorschemedesigner.com/#2S42hvKppsOV3
+*/
+
 p.notstarted {
     border: 2px solid grey;
 }
-p.completed {
-    border: 2px solid green;
-}
 p.cancelled {
-    border: 2px solid lightgreen;
+    border: 2px solid #1C782C;
+}
+p.halted  {
+    border: 2px solid #9D2D24;
+}
+p.completed {
+    border: 2px solid #1C782C;
+    background-color: #C9F6D1
+}
+p.completed:hover {
+    background-color: #71F688
 }
 p.inprocess {
-    border: 2px solid lightblue;
+    border: 2px solid #203969;
+    background-color: #CCD9F4;
+}
+p.inprocess:hover {
+    background-color: #7DA5F4;
 }
 p.needsaction {
-    border: 2px solid red;
+    border: 2px solid #9D2D24;
+    background-color: #FAD0CD
 }
-p.unknownstatus {
-    border: 2px solid orange;
+p.needsaction:hover {
+    background-color: #FA7C73;
 }
+p.unknown {
+    border: 2px solid #9D7324;
+    background-color: #FAEACD;
+}
+p.unknown:hover {
+    background-color: #FACB73;
+}
+
 
 p.focus {
     background-color: #FFFFFF;
