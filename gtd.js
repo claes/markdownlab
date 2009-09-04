@@ -63,18 +63,12 @@ function init_tickler() {
                                            });
 	    }});
 
-    $('#tickler').append('<p>Projects:<ul id="projects-stats" class="tickler-selectable" ></ul></p>');
-    for (var project in ical.projects) {
-	$('#projects-stats').append('<li id="todo-projects-'+project+'" projectname="'+project+'" >' + ical.projects[project] + '</li>');
-    }
-
-
     $('#tickler').append('<p>Projects table:<table id="projects-table" ></table>');
     for (var project in ical.projects) {
-	$('#projects-table').append('<tr><td id="todo-project-'+project+'">' + ical.projects[project] + '</td></tr>');
+	$('#projects-table').append('<tr><td id="todo-project-'+project+'" projectname="'+project+'">Print ' + ical.projects[project] + '</td></tr>');
 	$('#todo-project-'+project).click(function() {
-		alert('print');
-		$('#todo').jqprint();
+		var projectname = $(this).attr('projectname');
+		$('#'+projectname).jqprint();
 		return (false);
 	    });
     }
