@@ -2,6 +2,8 @@ var ical = {
     todos:[],
     contexts: {
     },
+    projects: {
+    },
     todoStats: {
 	total: 0,
 	notstarted: 0,
@@ -16,6 +18,7 @@ var ical = {
 
 function init_tickler() {
 
+    //TODOs
     $('#tickler').append('<ul id="todo-stats" class="tickler-selectable"><li id="todo-stats-total" todostatus="all">Number of todos: '+ical.todoStats.total+'</li>' +
 			 '<li id="todo-stats-notstarted" todostatus="notstarted">Not started: '+ical.todoStats.notstarted+'</li>' + 
 			 '<li id="todo-stats-completed" class="completed" todostatus="completed">Completed: '+ical.todoStats.completed+'</li>' + 
@@ -41,8 +44,8 @@ function init_tickler() {
 	    }});
 
 
-
-    $('#tickler').append('<p>Contexts:<ul id="context-stats" class="tickler-selectable" ></p>');
+    //Contexts
+    $('#tickler').append('<p>Contexts:<ul id="context-stats" class="tickler-selectable" ></ul></p>');
     for (var context in ical.contexts) {
 	$('#context-stats').append('<li id="todo-contexts-'+context+'" contextname="'+context+'" >' + context + '</li>');
     }
@@ -59,6 +62,12 @@ function init_tickler() {
                                                }
                                            });
 	    }});
+
+    $('#tickler').append('<p>Projects:<ul id="project-stats" class="tickler-selectable" ></ul></p>');
+    for (var project in ical.projects) {
+	$('#project-stats').append('<li id="todo-projects-'+project+'" projectname="'+project+'" >' + ical.projects[project] + '</li>');
+    }
+
 
 }
 
@@ -141,6 +150,19 @@ function wrap_todo(todoElem) {
 	    todo.contexts = contexts;
 	    todo.comment = comment;
 	    todoElem.addClass('context-'+context);
+	}
+
+	//Find project: this is the heading this todo is sorted under
+	//In markdown each heading is contained in a div which uses
+	//the heading name as basis for its id
+	var projectDiv = todoElem.closest('div');
+	if (projectDiv && projectDiv.get(0)) {
+	    var projectId = projectDiv.get(0).id;
+	    var projectName = projectDiv.children('h1');
+	    if (projectId && projectName) {
+		todo.project = projectName.text();
+		ical.projects[projectId] = projectName.text();
+	    }
 	}
 
 	todo.description = text;
