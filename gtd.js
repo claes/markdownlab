@@ -63,9 +63,15 @@ function init_tickler() {
                                            });
 	    }});
 
-    $('#tickler').append('<p>Projects:<ul id="project-stats" class="tickler-selectable" ></ul></p>');
+    $('#tickler').append('<p>Projects:<ul id="projects-stats" class="tickler-selectable" ></ul></p>');
     for (var project in ical.projects) {
-	$('#project-stats').append('<li id="todo-projects-'+project+'" projectname="'+project+'" >' + ical.projects[project] + '</li>');
+	$('#projects-stats').append('<li id="todo-projects-'+project+'" projectname="'+project+'" >' + ical.projects[project] + '</li>');
+    }
+
+
+    $('#tickler').append('<p>Projects table:<table id="projects-table" ></table>');
+    for (var project in ical.projects) {
+	$('#projects-table').append('<tr><td id="todo-project-'+project+'">' + ical.projects[project] + '</td></tr>');
     }
 
 
@@ -157,6 +163,7 @@ function wrap_todo(todoElem) {
 	//the heading name as basis for its id
 	var projectDiv = todoElem.closest('div');
 	if (projectDiv && projectDiv.get(0)) {
+	    projectDiv.addClass('project');
 	    var projectId = projectDiv.get(0).id;
 	    var projectName = projectDiv.children('h1');
 	    if (projectId && projectName) {

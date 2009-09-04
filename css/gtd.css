@@ -157,11 +157,11 @@ dd p {
 
 @media print {
 
-    h1 {
+    div.project  {
 	page-break-before: always;
     }
 
-    h1:first-child {
+    div.project:first-child {
 	page-break-before: avoid;
 	counter-reset: page;
     }
