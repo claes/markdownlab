@@ -80,7 +80,7 @@ function init_tickler() {
 
 function wrap_todo(todoElem) {
 
-    var text = todoElem.text2();
+    var text = todoElem.textExtraWhitespace();
 
     //todo is identified by brackets around a char
     var todoSymbol = /^\[(.)\]/.exec(text);
